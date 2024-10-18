@@ -26,15 +26,20 @@ class _MyPageState extends State<MyPage> {
         centerTitle: true,
         backgroundColor: Colors.orange,
         //leading:  Icon(Icons.refresh, color: Colors.white),
-        actions: const [
+        actions: [
           Padding(
-            padding: EdgeInsets.all(15.0),
-            child: Icon(Icons.refresh, color: Colors.white),
+            padding: const EdgeInsets.all(15.0),
+            child: IconButton(
+              icon: const Icon(Icons.refresh, color: Colors.white), 
+              onPressed: () {  
+                _resetaValores();
+              },
+            ),
+            
           ),
         ],
       ),
-      body: SizedBox(
-        width: double.infinity,
+      body: SingleChildScrollView(
         child: Form(
           key: _formkey,
           child: Column(
@@ -65,6 +70,7 @@ class _MyPageState extends State<MyPage> {
       child: TextFormField(
         keyboardType: TextInputType.number,
         textAlign: TextAlign.right,
+        style: const TextStyle(fontSize: 18),
         decoration: InputDecoration(
           labelText: "Preço da Gasolina",
           floatingLabelStyle: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
@@ -92,6 +98,7 @@ class _MyPageState extends State<MyPage> {
       child: TextFormField(
         keyboardType: TextInputType.number,
         textAlign: TextAlign.right,
+        style: const TextStyle(fontSize: 18),
         decoration: InputDecoration(
           labelText: "Preço do Álcool",
           floatingLabelStyle: const TextStyle(color: Colors.orange, fontWeight: FontWeight.bold),
@@ -138,7 +145,7 @@ class _MyPageState extends State<MyPage> {
           ),
           onPressed: () {
             if(_formkey.currentState!.validate()) {
-              //calcula();
+              calcula();
               FocusScope.of(context).requestFocus(FocusNode());
             }
           },
@@ -151,6 +158,28 @@ class _MyPageState extends State<MyPage> {
     return Padding(padding: const EdgeInsets.fromLTRB(40, 40, 40, 40),
       child: Text(_infoText, style: const TextStyle(fontSize: 25), textAlign: TextAlign.center,),
     );
+  }
+
+  void calcula() {
+    setState(() {
+      double gasolina = double.parse(gasolinaController.text);
+      double alcool = double.parse(alcoolController.text);
+      double resultado = (alcool/gasolina);
+
+      if(resultado > 0.70) {
+        _infoText = "Percentual: (${resultado.toStringAsPrecision(3)})\n\nVale a pena abastecer com Gasolina!";
+      } else {
+        _infoText = "Percentual: (${resultado.toStringAsPrecision(3)})\n\nVale a pena abastecer com Álcool!";
+      }
+    });
+  }
+
+  _resetaValores() {
+    setState(() {
+      gasolinaController.text = "";
+      alcoolController.text = "";
+      _infoText = "Informe o valor de cada combustível";
+    });
   }
 
 }
